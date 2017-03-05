@@ -1,0 +1,16 @@
+{
+  "name": "farmer-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack --watch js/*.js js/*/*.js",
+    "serve": "browser-sync start -s -f='bundle.js, *.html'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jesse McIntosh",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^2.2.1"
+  }
+}
