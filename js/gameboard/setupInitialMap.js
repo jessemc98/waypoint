@@ -1,4 +1,5 @@
 import { createJunction } from '../node'
+import { createJunctionOnBoard, linkJunctionToNeighbours } from '../waypoints'
 
 // setup the initial paths and waypoints
 export default function setupInitialPaths() {
@@ -19,29 +20,13 @@ export default function setupInitialPaths() {
 		setGridNode(size / 2 - 1, block, {type: 'path'})
 	}
 
-	// creates a 'junction' node with pos of ('x', 'y')
-	// sets gridNode at pos ('x', 'y') to created 'junction'
-	// pushes 'junction' to this.junctions
-	const createJunctionNode = (x, y) => {
-		const node = createJunction(x, y, 'junction')
-		setGridNode(x, y, node)
-		this.junctions.push(node)
-		return node
-	}
-	// set junction nodes for each junction
-	const topLeft = createJunctionNode(0, 0)
-	const topMid = createJunctionNode(size/2 - 1, 0)
-	const topRight = createJunctionNode(size - 1, 0)
-	const bottomLeft = createJunctionNode(0, size - 1)
-	const bottomMid = createJunctionNode(size/2 - 1, size - 1)
-	const bottomRight = createJunctionNode(size - 1, size - 1)
-
-	// create links between junctions
-	topLeft.linkRight(topMid)
-	topLeft.linkDown(bottomLeft)
-	topMid.linkRight(topRight)
-	topMid.linkDown(bottomMid)
-	topRight.linkDown(bottomRight)
-	bottomLeft.linkRight(bottomMid)
-	bottomMid.linkRight(bottomRight)
+	const initialJunctions = [
+		[0,0], 
+		[size/2 - 1, 0], 
+		[size - 1, 0], 
+		[0, size - 1], 
+		[size/2 - 1, size - 1], 
+		[size - 1, size - 1]]
+		.map(pos => createJunctionOnBoard(pos[0], pos[1], this))
+		.map(node => linkJunctionToNeighbours(node, this))
 }

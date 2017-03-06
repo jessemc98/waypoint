@@ -1,58 +1,32 @@
 import { createPlayer as createPlayerNode } from './node'
+import { linkJunctionToNeighbours, checkForJunctionInDirection } from './waypoints'
 import colors from './colors'
 
 // create player
 export default (gameBoard) => {
-	const getGridNode = gameBoard.grid.getGridNode.bind(gameBoard.grid)
-	const setGridNode = gameBoard.grid.setGridNode.bind(gameBoard.grid)
 	const initialPos = {
 		x: 0,
 		y: gameBoard.grid.size / 2 - 1
 	}
-	const node = createPlayerNode(0, gameBoard.grid.size / 2 - 1)
-	node.linkUp(getGridNode(0, 0))
-	node.linkDown(getGridNode(0,31))
 	
-
-	const updateNode = function () {
-		const current = this.getCurrentNode()
-		const next = this.getNextNode()
-
-		// if moving from junction to junction, do nothing
-		// if(current.type === 'junction' && next.type === 'junction') return
-
-		// if moving from junction to path
-		if(current.type === 'junction' && next.type === 'path') {
-			const opposite = true
-			console.log(this)
-			this.node.clearLinks()
-
-			current[this.dir].link(this.dir, this.node, opposite)
-			current.link(this.dir, node)
-		}
-		// if moving from path to grass
-		if(current.type === 'path' &&
-			next.type === 'grass') {
-		//TODO if moving from path to grass but in same axis as previous step do nothing
-			let copy = Object.assign(createPlayerNode(), this.node)
-			this.node.type = 'junction'
-
-			setGridNode(this.pos.x, this.pos.y, this.node)
-			this.node = copy
-		}
-		// move player node
-		this.node.x += this.vel.x
-		this.node.y += this.vel.y
-	}
 	return {
-		node,
+		node: createPlayerNode(0, gameBoard.grid.size / 2 - 1),
 		pos: initialPos,
+		prev: initialPos,
 		vel: { x: 0, y: 0 },
+		draw() {
+			const { ctx } = gameBoard
+			const { x, y } = this.pos
+			const size = gameBoard.width / gameBoard.grid.size
+
+			ctx.fillStyle = colors[this.node.type]
+			ctx.fillRect(x * size + 5, y * size + 5, size - 10, size - 10)
+		},
 		getCurrentNode() {
-			return getGridNode(this.pos.x, this.pos.y)
+			return gameBoard.grid.getGridNode(this.pos.x, this.pos.y)
 		},
 		getNextNode() {
-			return getGridNode(this.pos.x + this.vel.x, this.pos.y + this.vel.y)
+			return gameBoard.grid.getGridNode(this.pos.x + this.vel.x, this.pos.y + this.vel.y)
 		},
 		move(dir) {
 			this.dir = dir
@@ -74,18 +48,19 @@ export default (gameBoard) => {
 		moveLeft() {
 			return this.pos.x !== 0 && (this.vel.x = -1)
 		},
-		update() {
-			updateNode.call(this)
-			this.pos.x += this.vel.x
-			this.pos.y += this.vel.y
+		updatePos(pos) {
+			pos.x += this.vel.x
+			pos.y += this.vel.y
 		},
-		draw() {
-			const { ctx } = gameBoard
-			const { x, y } = this.pos
-			const size = gameBoard.width / gameBoard.grid.size
+		updateNode() {
+			this.node.Left = this.node.Right = this.node.Up = this.node.Down = null
 
-			ctx.fillStyle = colors[this.node.type]
-			ctx.fillRect(x * size + 5, y * size + 5, size - 10, size - 10)
+			linkJunctionToNeighbours(this.node, gameBoard, this.node)
+			this.updatePos(this.node)
+		},
+		update() {
+			this.updateNode()
+			this.updatePos(this.pos)
 		}
 	}
 }
