@@ -34,6 +34,12 @@ export function createAndLinkJunctionToBoard(pos, gameBoard) {
 	return node
 }
 
+export function updateJunctionNeighbours(junction, gameBoard, player) {
+	junction.Left && linkJunctionToNeighbours(junction.Left, gameBoard, player)
+	junction.Right && linkJunctionToNeighbours(junction.Right, gameBoard, player)
+	junction.Up && linkJunctionToNeighbours(junction.Up, gameBoard, player)
+	junction.Down && linkJunctionToNeighbours(junction.Down, gameBoard, player)
+}
 // calls checkNodeForJunctions on given junction
 // links returned junctions to given junction
 export function linkJunctionToNeighbours(junction, gameBoard, player={x:-1,y:-1}) {
@@ -41,7 +47,8 @@ export function linkJunctionToNeighbours(junction, gameBoard, player={x:-1,y:-1}
 	links.forEach(link => {
 		const x = junction.x - link.x
 		const y = junction.y - link.y
-
+		if (link.x === player.x && link.y === player.y) return 
+			
 		const node = createJunctionIfNotPresent(link.x, link.y, gameBoard)
 
 		if (x < 0) {
@@ -66,7 +73,7 @@ export function linkJunctionToNeighbours(junction, gameBoard, player={x:-1,y:-1}
 }
 // returns array with vector objects with position of 
 // junctions/where junctions should be placed around node
-export function checkNodeForJunctions(node, { grid }, player) {
+export function checkNodeForJunctions(node, { grid }, player={x: -1, y: -1}) {
 	const getNodeAtPos = grid.getGridNode.bind(grid)
 	const directions = [[-1,0], [1,0], [0,1], [0,-1]]
 
@@ -74,9 +81,10 @@ export function checkNodeForJunctions(node, { grid }, player) {
 		const junction = checkForJunctionInDirection(
 			{x: node.x, y: node.y},
 			{x: dir[0], y: dir[1]}, 
-			getNodeAtPos)
+			getNodeAtPos,
+			player)
 
-		junction && !(player.x === junction.x && player.y === junction.y) && junctions.push(junction)
+		junction && junctions.push(junction)
 		return junctions
 	}, [])
 }
@@ -84,7 +92,7 @@ export function checkNodeForJunctions(node, { grid }, player) {
 // returns position of junction if there is a junction in given dir (direction)
 // returns position where there should be a junction in given dir if there is no junction
 // returns false if no junction and no need for a junction in given dir
-export function checkForJunctionInDirection(pos, dir, getNodeAtPos, notInitial) {
+export function checkForJunctionInDirection(pos, dir, getNodeAtPos, player, notInitial) {
 	const nextPos = {
 		x: pos.x + dir.x,
 		y: pos.y + dir.y
@@ -98,7 +106,7 @@ export function checkForJunctionInDirection(pos, dir, getNodeAtPos, notInitial) 
 	if (notInitial && !isWalkable(next)) return { x: pos.x, y: pos.y }
 
 	// if next is junction return pos of that junction
-	if (next.type === 'junction') return { x: next.x, y: next.y }
+	if (next.type === 'junction' || (next.x === player.x && next.y === player.y)) return { x: next.x, y: next.y }
 
 	
 	// if none of the above check next node recursively
@@ -106,6 +114,7 @@ export function checkForJunctionInDirection(pos, dir, getNodeAtPos, notInitial) 
 		{x: nextPos.x, y: nextPos.y}, 
 		dir,
 		getNodeAtPos, 
+		player,
 		true)
 }
 

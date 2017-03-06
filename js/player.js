@@ -1,5 +1,5 @@
 import { createPlayer as createPlayerNode } from './node'
-import { linkJunctionToNeighbours, checkForJunctionInDirection } from './waypoints'
+import { linkJunctionToNeighbours, checkForJunctionInDirection, updateJunctionNeighbours, createJunctionIfNotPresent, checkNodeForJunctions } from './junctions'
 import colors from './colors'
 
 // create player
@@ -54,9 +54,17 @@ export default (gameBoard) => {
 		},
 		updateNode() {
 			this.node.Left = this.node.Right = this.node.Up = this.node.Down = null
+			
 
-			linkJunctionToNeighbours(this.node, gameBoard, this.node)
+
 			this.updatePos(this.node)
+			updateJunctionNeighbours(this.node, gameBoard, this.node)
+
+			checkNodeForJunctions(this.node, gameBoard)
+				.map(junction => createJunctionIfNotPresent(junction.x, junction.y, gameBoard, this.node))
+				.map(junction => updateJunctionNeighbours(junction, gameBoard, this.node))
+
+			linkJunctionToNeighbours(this.node, gameBoard)
 		},
 		update() {
 			this.updateNode()

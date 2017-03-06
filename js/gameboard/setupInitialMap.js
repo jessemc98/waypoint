@@ -1,5 +1,5 @@
 import { createJunction } from '../node'
-import { createJunctionOnBoard, linkJunctionToNeighbours } from '../waypoints'
+import { createJunctionOnBoard, linkJunctionToNeighbours } from '../junctions'
 
 // setup the initial paths and waypoints
 export default function setupInitialPaths() {
