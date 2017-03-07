@@ -1,6 +1,10 @@
 import { createPlayer as createPlayerNode } from './node'
-import { linkJunctionToNeighbours, checkForJunctionInDirection, updateJunctionNeighbours, createJunctionIfNotPresent, checkNodeForJunctions } from './junctions'
 import colors from './colors'
+import { 
+	linkJunctionToNeighbours, 
+	updateJunctionNeighbours, 
+	createJunctionIfNotPresent, 
+	checkNodeForJunctions } from './junctions'
 
 // create player
 export default (gameBoard) => {
@@ -30,9 +34,11 @@ export default (gameBoard) => {
 		},
 		move(dir) {
 			this.dir = dir
+			this.vel.x = this.vel.y = 0 
 			// if no direction stop moving
 			if (!dir) {
-				return this.vel.x = this.vel.y = 0 }
+				return this.dir = null
+			}
 
 			this['move' + dir]()
 		},
@@ -54,9 +60,8 @@ export default (gameBoard) => {
 		},
 		updateNode() {
 			this.node.Left = this.node.Right = this.node.Up = this.node.Down = null
-			
 
-
+			updateJunctionNeighbours(this.node, gameBoard, this.node)
 			this.updatePos(this.node)
 			updateJunctionNeighbours(this.node, gameBoard, this.node)
 
@@ -68,6 +73,8 @@ export default (gameBoard) => {
 		},
 		update() {
 			this.updateNode()
+
+			this.move(this.dir)
 			this.updatePos(this.pos)
 		}
 	}

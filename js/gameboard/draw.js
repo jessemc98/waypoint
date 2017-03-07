@@ -18,4 +18,5 @@ const fillGameBoard = (gameBoard, color) => {
 export default function draw() {
 	drawGridOnGameBoard(this)
 	this.player.draw()
+	this.enemies.forEach(enemy => enemy.draw())
 }

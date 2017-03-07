@@ -54,7 +54,8 @@ export const OPPOSITE = {
 
 export const TYPES = {
 	junction: 'junction',
-	player: 'player'
+	player: 'player',
+	enemy: 'enemy'
 }
 
 // creates a node
@@ -68,4 +69,8 @@ export function createJunction(x, y) {
 
 export function createPlayer(x, y) {
 	return new JunctionNode(x, y, TYPES.player)
+}
+
+export function createEnemy(x, y) {
+	return new JunctionNode(x, y, TYPES.enemy)
 }
