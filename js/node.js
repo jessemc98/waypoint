@@ -1,3 +1,5 @@
+import { NODE_TYPES, OPPOSITES } from './constants'
+
 class Node {
 	constructor(x, y, type) {
 		this.x = x
@@ -10,11 +12,11 @@ class JunctionNode extends Node {
 
 	link(dir, node, shouldOpposite) {
 		if (!node) {
-			this[dir][OPPOSITE[dir]] = null
+			this[dir][OPPOSITES[dir]] = null
 			return this[dir] = null
 		}
-		const direction = shouldOpposite ? OPPOSITE[dir] : dir
-		const opposite = shouldOpposite ? dir : OPPOSITE[dir]
+		const direction = shouldOpposite ? OPPOSITES[dir] : dir
+		const opposite = shouldOpposite ? dir : OPPOSITES[dir]
 		this[direction] = node
 		this[direction][opposite] = this
 	}
@@ -45,32 +47,18 @@ class JunctionNode extends Node {
 	}
 }
 
-export const OPPOSITE = {
-	Left: 'Right',
-	Right: 'Left',
-	Up: 'Down',
-	Down: 'Up'
-}
-
-export const TYPES = {
-	junction: 'junction',
-	player: 'player',
-	enemy: 'enemy'
-}
-
-// creates a node
 export function createNode(x, y, type) {
 	return new Node(x, y, type)
 }
 
 export function createJunction(x, y) {
-	return new JunctionNode(x, y, TYPES.junction)
+	return new JunctionNode(x, y, NODE_TYPES.junction)
 }
 
 export function createPlayer(x, y) {
-	return new JunctionNode(x, y, TYPES.player)
+	return new JunctionNode(x, y, NODE_TYPES.player)
 }
 
 export function createEnemy(x, y) {
-	return new JunctionNode(x, y, TYPES.enemy)
+	return new JunctionNode(x, y, NODE_TYPES.enemy)
 }

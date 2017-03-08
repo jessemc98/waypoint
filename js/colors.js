@@ -1,8 +1,8 @@
 export default {
-	grass: '#8bc34a',
-	path: '#459e49',
-	enemy: '#000000',
-	apple: '#a41b11',
-	player: '#ffffff',
-	junction: '#459e49'//'#673ab7'
+	GRASS: '#8bc34a',
+	PATH: '#459e49',
+	ENEMY: '#000000',
+	APPLE: '#a41b11',
+	PLAYER: '#ffffff',
+	JUNCTION: '#459e49'//'#673ab7'
 }

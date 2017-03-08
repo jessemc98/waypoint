@@ -1,11 +1,11 @@
 import colors from './colors'
 import { findPath } from './pathfinding'
 
-const TERMINATE_MOVEMENT = {x:0,y:0}
+import { TERMINATE_MOVEMENT } from './constants'
 // create enemy on gameBoard
 export default (x, y, gameBoard) => ({
 	pos: { x , y },
-	vel: TERMINATE_MOVEMENT,
+	vel: Object.assign({}, TERMINATE_MOVEMENT),
 	wayPoints: [],
 	getWayPointsToPlayer() {
 		const path = findPath(this.node, gameBoard.player.node) || []
@@ -39,7 +39,7 @@ export default (x, y, gameBoard) => ({
 		const { x, y } = this.pos
 		const size = gameBoard.width / gameBoard.grid.size
 
-		ctx.fillStyle = colors.enemy
+		ctx.fillStyle = colors.ENEMY
 		ctx.fillRect(x * size + 5, y * size + 5, size - 10, size - 10)
 	},
 	update() {

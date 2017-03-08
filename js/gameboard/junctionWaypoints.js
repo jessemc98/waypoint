@@ -3,9 +3,9 @@ import {
   createPlayer,
   createEnemy } from '../node.js'
 import createGrid from '../grid.js'
-
+import { NODE_TYPES } from '../constants'
 const ABS = Math.abs
-window.getNeighbours = checkJunctionForNeighbours
+
 export default function waypointSystem(gameBoard) {
   const { player, enemies, grid } = gameBoard
 
@@ -14,11 +14,9 @@ export default function waypointSystem(gameBoard) {
   enemies.map(enemy =>
     enemy.node = createEnemy(enemy.pos.x, enemy.pos.y))
 
-  let lastPos = Object.assign({}, player.node)
   return {
     update() {
       // if (player.pos.x === player.node.x && player.pos.y === player.node.y) return
-      lastPos = Object.assign({}, player.node)
       const prevConnections = getJunctionNeighbours(player.node)
 
       player.node.clearLinks()
@@ -27,9 +25,9 @@ export default function waypointSystem(gameBoard) {
       linkJunctionToNeighbours(player.node, grid)
 
       const nodeAtPlayer = grid.getGridNode(player.node.x, player.node.y)
-      if (nodeAtPlayer.type === 'grass') nodeAtPlayer.type = 'path'
-      if (nodeAtPlayer.type === 'apple') {
-        nodeAtPlayer.type = 'path'
+      if (nodeAtPlayer.type === NODE_TYPES.grass) nodeAtPlayer.type = NODE_TYPES.path
+      if (nodeAtPlayer.type === NODE_TYPES.apple) {
+        nodeAtPlayer.type = NODE_TYPES.path
         gameBoard.apples -= 1
       }
       if (gameBoard.apples === 0 ) {
@@ -84,7 +82,7 @@ export function createWaypointGrid(size) {
 // expects:
 //   an array of exactly 2, currently linked, Junction nodes.
 //   a Grid object
-// sets every node between junctions to be of type 'path' if it is not of type 'junction'
+// sets every node between junctions to be of type NODE_TYPES.path if it is not of type 'junction'
 function drawPathBetweenJunctions(junctions, grid) {
   const path = getPathBetweenJunctions(junctions[0], junctions[1])
     for (let next = path.next(); next = path.next();) {
@@ -93,7 +91,7 @@ function drawPathBetweenJunctions(junctions, grid) {
       const gridNode = grid.getGridNode(next.x, next.y)
 
       // set node type to path if not a junction
-      if (gridNode.type !== 'junction') gridNode.type = 'path'
+      if (gridNode.type !== NODE_TYPES.junction) gridNode.type = NODE_TYPES.path
     }
 }
 
@@ -155,7 +153,7 @@ function linkJunctionToNeighbours(junction, grid, player) {
     // set neighbour to junction if not already a junction
     .map(neighbour => {
       // console.log('neighbour', Object.assign({}, neighbour));
-      if (!(neighbour.type === 'junction' || neighbour.type === 'player')) {
+      if (!(neighbour.type === NODE_TYPES.junction || neighbour.type === NODE_TYPES.player)) {
 
         neighbour = createJunction(neighbour.x, neighbour.y)
         // console.log('created junction', Object.assign({}, neighbour));
@@ -207,11 +205,11 @@ function checkJunctionForNeighbours(junction, grid, player={x:-1,y:-1}) {
           neighbours.push(player)
           return neighbours
         }
-        if (next.currNode.type === 'junction') {
+        if (next.currNode.type === NODE_TYPES.junction) {
           neighbours.push(next.currNode)
           return neighbours
         }
-        if (next.currNode.type === 'grass' || next.currNode.type === 'apple') {
+        if (next.currNode.type === NODE_TYPES.grass || next.currNode.type === NODE_TYPES.apple) {
           if (next.i === 0) return neighbours
           neighbours.push(next.prevNode)
           return neighbours

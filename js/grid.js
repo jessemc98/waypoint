@@ -1,4 +1,5 @@
-export default (size, filler={type: 'grass'}) => ({
+import { NODE_TYPES } from './constants'
+export default (size, filler={type: NODE_TYPES.grass}) => ({
 	size,
 	nodes: Array(size * size).fill(0).map(_ => Object.assign({},filler)),
 

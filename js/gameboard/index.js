@@ -1,14 +1,10 @@
 import createPlayer from '../player'
 import createEnemy from '../enemy'
 
+import { GAME_STEP, GRID_SIZE, NODE_TYPES } from '../constants'
 import drawGameBoard from './draw'
 import { setupMovement } from './playerinput'
 import waypointSystem, { createWaypointGrid } from './junctionWaypoints'
-
-const GRID_SIZE = 16
-const GAME_STEP = (1000/60) * 12
-const PLAYER_STEP = (1000/60) * 9
-const ENEMY_STEP = (1000/60) * 11
 
 export default (canvas) => ({
 	canvas,
@@ -21,14 +17,18 @@ export default (canvas) => ({
 	apples: 0,
 	init() {
 		this.player = createPlayer(this)
+		// setup keyboard listeners
+		setupMovement(this)
+
+		// make some enemies
 		this.enemies.push(createEnemy(GRID_SIZE - 1, GRID_SIZE - 1, this))
 		this.enemies.push(createEnemy(GRID_SIZE - 6, 0, this))
 		this.enemies.push(createEnemy(GRID_SIZE - 1, GRID_SIZE / 2, this))
 
+		// setup grid/waypoint system
 		this.waypoints = waypointSystem(this)
-		// setup movement listeners
-		setupMovement(this)
 
+		// make some apples
 		// topleft
 		spawnAppleAtBlock(this, 3, 3)
 		spawnAppleAtBlock(this, 3, 6)
@@ -50,7 +50,7 @@ export default (canvas) => ({
 		spawnAppleAtBlock(this, GRID_SIZE - 7, 3)
 		spawnAppleAtBlock(this, GRID_SIZE - 7, 6)
 		spawnAppleAtBlock(this, GRID_SIZE - 7, 9)
-
+		// topleft
 		spawnAppleAtBlock(this, GRID_SIZE - 4, GRID_SIZE - 4)
 		spawnAppleAtBlock(this, GRID_SIZE - 4, GRID_SIZE - 7)
 		spawnAppleAtBlock(this, GRID_SIZE - 4, GRID_SIZE - 10)
@@ -60,7 +60,7 @@ export default (canvas) => ({
 
 		this.update.call(this)
 	},
-	// used for updating enitities
+	// GAME LOOP
 	lastUpdate: performance.now(),
 	update(dt) {
 		if (this.pause) return requestAnimationFrame(this.update.bind(this))
@@ -69,7 +69,7 @@ export default (canvas) => ({
 			timePast -= GAME_STEP
 			this.lastUpdate += GAME_STEP
 
-
+			// update entity positions
 			this.player.update()
 			this.enemies.forEach(enemy => enemy.update())
 
@@ -81,16 +81,13 @@ export default (canvas) => ({
 	}
 })
 
-
 function spawnAppleAtBlock(gameBoard, X, Y) {
-	const x = X || Math.round(Math.random() * gameBoard.grid.size) - 1
-	const y = Y || Math.round(Math.random() * gameBoard.grid.size) - 1
+	const x = X || Math.round(Math.random() * GRID_SIZE) - 1
+	const y = Y || Math.round(Math.random() * GRID_SIZE) - 1
 	const node = gameBoard.grid.getGridNode(x, y)
-	if (node.type === 'grass') {
-		node.type = 'apple'
+	if (node.type === NODE_TYPES.grass) {
+		node.type = NODE_TYPES.apple
 
 		gameBoard.apples += 1
 	}
 }
-
-window.spawnAppleAtBlock = spawnAppleAtBlock
