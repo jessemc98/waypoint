@@ -28,6 +28,35 @@ export default (canvas) => ({
 		// setup movement listeners
 		setupMovement(this)
 
+		// topleft
+		spawnAppleAtBlock(this, 3, 3)
+		spawnAppleAtBlock(this, 3, 6)
+		spawnAppleAtBlock(this, 3, 9)
+		spawnAppleAtBlock(this, 6, 3)
+		spawnAppleAtBlock(this, 6, 6)
+		spawnAppleAtBlock(this, 6, 9)
+		// bottomleft
+		spawnAppleAtBlock(this, 3, GRID_SIZE - 4)
+		spawnAppleAtBlock(this, 3, GRID_SIZE - 7)
+		spawnAppleAtBlock(this, 3, GRID_SIZE - 10)
+		spawnAppleAtBlock(this, 6, GRID_SIZE - 4)
+		spawnAppleAtBlock(this, 6, GRID_SIZE - 7)
+		spawnAppleAtBlock(this, 6, GRID_SIZE - 10)
+		// topright
+		spawnAppleAtBlock(this, GRID_SIZE - 4, 3)
+		spawnAppleAtBlock(this, GRID_SIZE - 4, 6)
+		spawnAppleAtBlock(this, GRID_SIZE - 4, 9)
+		spawnAppleAtBlock(this, GRID_SIZE - 7, 3)
+		spawnAppleAtBlock(this, GRID_SIZE - 7, 6)
+		spawnAppleAtBlock(this, GRID_SIZE - 7, 9)
+
+		spawnAppleAtBlock(this, GRID_SIZE - 4, GRID_SIZE - 4)
+		spawnAppleAtBlock(this, GRID_SIZE - 4, GRID_SIZE - 7)
+		spawnAppleAtBlock(this, GRID_SIZE - 4, GRID_SIZE - 10)
+		spawnAppleAtBlock(this, GRID_SIZE - 7, GRID_SIZE - 4)
+		spawnAppleAtBlock(this, GRID_SIZE - 7, GRID_SIZE - 7)
+		spawnAppleAtBlock(this, GRID_SIZE - 7, GRID_SIZE - 10)
+
 		this.update.call(this)
 	},
 	// used for updating enitities
