@@ -39,7 +39,7 @@ export default (x, y, gameBoard) => ({
 		const { x, y } = this.pos
 		const size = gameBoard.width / gameBoard.grid.size
 
-		ctx.fillStyle = colors.apple
+		ctx.fillStyle = colors.enemy
 		ctx.fillRect(x * size + 5, y * size + 5, size - 10, size - 10)
 	},
 	update() {
