@@ -23,6 +23,7 @@ export default (canvas) => ({
 		this.player = createPlayer(this)
 		this.enemies.push(createEnemy(GRID_SIZE - 1, GRID_SIZE - 1, this))
 		this.enemies.push(createEnemy(GRID_SIZE - 6, 0, this))
+		this.enemies.push(createEnemy(GRID_SIZE - 1, GRID_SIZE / 2, this))
 
 		this.waypoints = waypointSystem(this)
 		// setup movement listeners
@@ -85,9 +86,11 @@ function spawnAppleAtBlock(gameBoard, X, Y) {
 	const x = X || Math.round(Math.random() * gameBoard.grid.size) - 1
 	const y = Y || Math.round(Math.random() * gameBoard.grid.size) - 1
 	const node = gameBoard.grid.getGridNode(x, y)
-	if (node.type === 'grass') node.type = 'apple'
+	if (node.type === 'grass') {
+		node.type = 'apple'
 
-	gameBoard.apples += 1
+		gameBoard.apples += 1
+	}
 }
 
 window.spawnAppleAtBlock = spawnAppleAtBlock

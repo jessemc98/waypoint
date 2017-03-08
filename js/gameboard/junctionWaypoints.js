@@ -28,6 +28,14 @@ export default function waypointSystem(gameBoard) {
 
       const nodeAtPlayer = grid.getGridNode(player.node.x, player.node.y)
       if (nodeAtPlayer.type === 'grass') nodeAtPlayer.type = 'path'
+      if (nodeAtPlayer.type === 'apple') {
+        nodeAtPlayer.type = 'path'
+        gameBoard.apples -= 1
+      }
+      if (gameBoard.apples === 0 ) {
+        gameBoard.apples -= 1
+        alert('YOU WIN!!!')
+      }
 
       prevConnections.forEach(connection => linkJunctionToNeighbours(connection, grid, player.node))
       // console.log('previousNode', prevNode);
@@ -203,7 +211,7 @@ function checkJunctionForNeighbours(junction, grid, player={x:-1,y:-1}) {
           neighbours.push(next.currNode)
           return neighbours
         }
-        if (next.currNode.type === 'grass') {
+        if (next.currNode.type === 'grass' || next.currNode.type === 'apple') {
           if (next.i === 0) return neighbours
           neighbours.push(next.prevNode)
           return neighbours
