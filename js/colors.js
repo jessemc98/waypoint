@@ -1,7 +1,7 @@
 export default {
 	grass: '#8bc34a',
-	path: '#4caf50',
-	apple: '#f44336',
-	player: '#000000',
-	junction: '#673ab7'
+	path: '#459e49',
+	apple: '#000000',
+	player: '#ffffff',
+	junction: '#459e49'//'#673ab7'
 }
