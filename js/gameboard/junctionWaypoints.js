@@ -8,6 +8,9 @@ const ABS = Math.abs
 
 export default function waypointSystem(gameBoard) {
   const { player, enemies, grid } = gameBoard
+  const walkSound = new Audio('./walk.mp3')
+  const appleSound = new Audio('./apple.mp3')
+  const deathSound = new Audio('./enemy.mp3')
 
   player.node = createPlayer(player.pos.x, player.pos.y)
 
@@ -25,6 +28,9 @@ export default function waypointSystem(gameBoard) {
       const prevConnections = getJunctionNeighbours(player.node)
       // if player has moved update player junction node
       if (!(player.pos.x === player.node.x && player.pos.y === player.node.y)) {
+        walkSound.currentTime = 0
+        walkSound.play()
+
         player.node.clearLinks()
         updatePos(player.node, player.pos)
 
@@ -35,6 +41,8 @@ export default function waypointSystem(gameBoard) {
         if (nodeAtPlayer.type === NODE_TYPES.grass) nodeAtPlayer.type = NODE_TYPES.path
         // eat apple if player is on apple node
         if (nodeAtPlayer.type === NODE_TYPES.apple) {
+          appleSound.currentTime = 0
+          appleSound.play()
           nodeAtPlayer.type = NODE_TYPES.path
           gameBoard.apples -= 1
         }
@@ -60,6 +68,8 @@ export default function waypointSystem(gameBoard) {
       // check if enemies have caught player
       enemies.forEach(enemy => {
         if (enemy.pos.x === player.pos.x && enemy.pos.y === player.pos.y) {
+          deathSound.currentTime = 0
+          deathSound.play()
           return gameBoard.ui.gameOver()
         }
       })
