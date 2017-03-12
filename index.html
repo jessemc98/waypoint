@@ -5,6 +5,7 @@
 	<style>
 		body {
 			display: flex;
+			flex-direction: column;
 			justify-content: center;
 			align-items: center;
 			height: 100vh;
@@ -16,6 +17,36 @@
 			border-radius: 10px;
 			max-width: 90%;
 			max-height: 90%;
+		}
+		.ui-button {
+			position: absolute;
+	    font-size: 32px;
+	    font-weight: 500;
+	    background: rgba(252, 252, 252, 0.26);
+	    border: 4px solid black;
+		}
+		.ui-button:hover, .ui-button:focus {
+			text-decoration: underline;
+		}
+		.ui-button.disabled {
+			text-decoration: none;
+		}
+		.flashing {
+			animation: flashing 350ms infinite;
+		}
+		@keyframes flashing {
+			0% {
+				border-color: black;
+			}
+			50% {
+				border-color: black;
+			}
+			51% {
+				border-color: red;
+			}
+			100% {
+				border-color: red;
+			}
 		}
 	</style>
 </head>

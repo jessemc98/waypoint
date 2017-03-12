@@ -5,6 +5,7 @@ import { GAME_STEP, GRID_SIZE, NODE_TYPES } from '../constants'
 import drawGameBoard from './draw'
 import { setupMovement } from './playerinput'
 import waypointSystem, { createWaypointGrid } from './junctionWaypoints'
+import ui from './interface'
 
 export default (canvas) => ({
 	canvas,
@@ -16,6 +17,10 @@ export default (canvas) => ({
 	enemies: [],
 	apples: 0,
 	init() {
+		// setup ui
+		this.ui = ui(this)
+
+		// setup player
 		this.player = createPlayer(this)
 		// setup keyboard listeners
 		setupMovement(this)
@@ -58,10 +63,13 @@ export default (canvas) => ({
 		spawnAppleAtBlock(this, GRID_SIZE - 7, GRID_SIZE - 7)
 		spawnAppleAtBlock(this, GRID_SIZE - 7, GRID_SIZE - 10)
 
+		// draw initial state
+		this.draw()
 		this.update.call(this)
 	},
 	// GAME LOOP
-	lastUpdate: performance.now(),
+	lastUpdate: null,
+	pause: true,
 	update(dt) {
 		if (this.pause) return requestAnimationFrame(this.update.bind(this))
 		let timePast = dt - this.lastUpdate
