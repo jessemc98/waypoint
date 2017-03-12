@@ -31,14 +31,17 @@ export default function waypointSystem(gameBoard) {
         linkJunctionToNeighbours(player.node, grid)
 
         const nodeAtPlayer = grid.getGridNode(player.node.x, player.node.y)
+        // turn grass to path if player is on grass node
         if (nodeAtPlayer.type === NODE_TYPES.grass) nodeAtPlayer.type = NODE_TYPES.path
+        // eat apple if player is on apple node
         if (nodeAtPlayer.type === NODE_TYPES.apple) {
           nodeAtPlayer.type = NODE_TYPES.path
           gameBoard.apples -= 1
         }
+        // check if player has collected all apples
         if (gameBoard.apples === 0 ) {
           gameBoard.apples -= 1
-          alert('YOU WIN!!!')
+          gameBoard.ui.win()
         }
 
         prevConnections.forEach(connection => linkJunctionToNeighbours(connection, grid, player.node))
@@ -53,6 +56,12 @@ export default function waypointSystem(gameBoard) {
         linkJunctionToNeighbours(enemy.node, grid)
 
         prevConnections.forEach(connection => linkJunctionToNeighbours(connection, grid, player.node))
+      })
+      // check if enemies have caught player
+      enemies.forEach(enemy => {
+        if (enemy.pos.x === player.pos.x && enemy.pos.y === player.pos.y) {
+          return gameBoard.ui.gameOver()
+        }
       })
 
       // if player connections have changed recalculate enemy paths
