@@ -16,8 +16,6 @@ export function setupMovement(gameBoard) {
 		}
 		movePlayer(state[0], gameBoard.player)
 	})
-
-	requestAnimationFrame(gameBoard.update.bind(gameBoard))
 }
 
 function movePlayer(dir, player) {
