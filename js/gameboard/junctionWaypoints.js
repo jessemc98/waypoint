@@ -14,33 +14,37 @@ export default function waypointSystem(gameBoard) {
   enemies.map(enemy =>
     enemy.node = createEnemy(enemy.pos.x, enemy.pos.y))
 
+  let prevWayPoints = {
+    Left: player.node.Left,
+    Right: player.node.Right,
+    Up: player.node.Up,
+    Down: player.node.Down
+  }
   return {
     update() {
-      // if (player.pos.x === player.node.x && player.pos.y === player.node.y) return
       const prevConnections = getJunctionNeighbours(player.node)
+      // if player has moved update player junction node
+      if (!(player.pos.x === player.node.x && player.pos.y === player.node.y)) {
+        player.node.clearLinks()
+        updatePos(player.node, player.pos)
 
-      player.node.clearLinks()
-      updatePos(player.node, player.pos)
+        linkJunctionToNeighbours(player.node, grid)
 
-      linkJunctionToNeighbours(player.node, grid)
+        const nodeAtPlayer = grid.getGridNode(player.node.x, player.node.y)
+        if (nodeAtPlayer.type === NODE_TYPES.grass) nodeAtPlayer.type = NODE_TYPES.path
+        if (nodeAtPlayer.type === NODE_TYPES.apple) {
+          nodeAtPlayer.type = NODE_TYPES.path
+          gameBoard.apples -= 1
+        }
+        if (gameBoard.apples === 0 ) {
+          gameBoard.apples -= 1
+          alert('YOU WIN!!!')
+        }
 
-      const nodeAtPlayer = grid.getGridNode(player.node.x, player.node.y)
-      if (nodeAtPlayer.type === NODE_TYPES.grass) nodeAtPlayer.type = NODE_TYPES.path
-      if (nodeAtPlayer.type === NODE_TYPES.apple) {
-        nodeAtPlayer.type = NODE_TYPES.path
-        gameBoard.apples -= 1
+        prevConnections.forEach(connection => linkJunctionToNeighbours(connection, grid, player.node))
       }
-      if (gameBoard.apples === 0 ) {
-        gameBoard.apples -= 1
-        alert('YOU WIN!!!')
-      }
 
-      prevConnections.forEach(connection => linkJunctionToNeighbours(connection, grid, player.node))
-      // console.log('previousNode', prevNode);
-      // linkJunctionToNeighbours(prevNode, grid, player.node)
-
-
-
+      // update enemy junction nodes
       enemies.forEach((enemy, i) => {
         const prevConnections = getJunctionNeighbours(enemy.node)
         enemy.node.clearLinks()
@@ -50,6 +54,21 @@ export default function waypointSystem(gameBoard) {
 
         prevConnections.forEach(connection => linkJunctionToNeighbours(connection, grid, player.node))
       })
+
+      // if player connections have changed recalculate enemy paths
+      if (
+        prevWayPoints.Left !== player.node.Left ||
+        prevWayPoints.Right !== player.node.Right ||
+        prevWayPoints.Up !== player.node.Up ||
+        prevWayPoints.Down !== player.node.Down ) {
+        enemies.forEach(enemy => enemy.getWayPointsToPlayer())
+      }
+      prevWayPoints = {
+        Left: player.node.Left,
+        Right: player.node.Right,
+        Up: player.node.Up,
+        Down: player.node.Down
+      }
     }
   }
 }
