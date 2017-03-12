@@ -8,8 +8,7 @@ export default (x, y, gameBoard) => ({
 	vel: Object.assign({}, TERMINATE_MOVEMENT),
 	wayPoints: [],
 	getWayPointsToPlayer() {
-		const path = findPath(this.node, gameBoard.player.node) || []
-		return this.wayPoints = path
+		return this.wayPoints = findPath(this.node, gameBoard.player.node)
 	},
 	moveToNextWaypoint() {
 		// if que is empty, return, no waypoint to go to
@@ -43,7 +42,6 @@ export default (x, y, gameBoard) => ({
 		ctx.fillRect(x * size + 5, y * size + 5, size - 10, size - 10)
 	},
 	update() {
-		this.getWayPointsToPlayer()
 		this.moveToNextWaypoint()
 
 		this.pos.x += this.vel.x
